@@ -1,0 +1,26 @@
+include "add.lus"
+include "circuit1.lus"
+include "addaffdecimal.lus"
+
+const n = 4;
+
+node unebascule (D,Enable,SET,RESET:bool) returns (Q,QB: bool)
+let
+Q = SET or not RESET ->(pre Q and not Enable) or (pre D and Enable);
+QB=not Q; 
+tel;
+
+node registrenbits <<const n: int>> (E : bool^n; Enable, Reset, Set:bool) returns (S: bool^n)
+var temp:bool^n;
+let 
+(S,temp)= map<<unebascule, n>>(E,Enable^n,Set^n,Reset^n);
+tel; 
+
+node compteur <<const n: int>>(Reset: bool) returns (S: bool^n)
+var temp1,temp2:bool^n; 
+var temp3:bool;
+let 
+    temp1=false^n->pre S; 
+    (temp2,temp3)=addnbits<<n>>(temp1,false^n,true); 
+    S=map <<and, n>>(temp2, (not Reset)^n); 
+tel; 

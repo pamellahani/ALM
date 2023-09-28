@@ -1,0 +1,57 @@
+include "memoire.lus" 
+include "UALCryptoV6.lus"
+
+node PartieC (Z,C, exp0, reset, start:bool )
+returns (S,S1,S2,uc1,uc0,Sentree:bool; chEXP, chM, chN, chCode, code1, fin:bool);
+var Etat1,Etat2,Etat3,Etat4, Etat5, Etat6, Etat7, Etat8, Etat9, Etat10, Etat11, Etat12 :bool;
+var EtatSuiv1, EtatSuiv2, EtatSuiv3,EtatSuiv4,EtatSuiv5,EtatSuiv6, EtatSuiv7, EtatSuiv8, EtatSuiv9, EtatSuiv10,EtatSuiv11,EtatSuiv12:bool;
+
+let
+--réalisation codage un parmi n
+--Memorisation de l'etat courant
+Etat1=bascule(EtatSuiv1,true,false,reset); --etat initial
+Etat2=bascule(EtatSuiv2,true,reset,false);
+Etat3=bascule(EtatSuiv3,true,reset,false);
+Etat4=bascule(EtatSuiv4,true,reset,false);
+Etat5=bascule(EtatSuiv5,true,reset,false);
+Etat6=bascule(EtatSuiv6,true,reset,false);
+Etat7=bascule(EtatSuiv7,true,reset,false);
+Etat8=bascule(EtatSuiv8,true,reset,false);
+Etat9=bascule(EtatSuiv9,true,reset,false);
+Etat10=bascule(EtatSuiv10,true,reset,false);
+Etat11=bascule(EtatSuiv11,true,reset,false); 
+Etat12 = bascule(EtatSuiv12, true, reset, false);--etat final
+
+--Calcul de l'état suivant
+-- EtatSuiv1 est l'etat initial
+-- EtatSuiv1 = 1 si on est pas dans start et ni aucun autre etat de l'automate
+EtatSuiv1= (not start) and (not (Etat2 or Etat3 or Etat4 or Etat5 or Etat6 or Etat7 or Etat8 or Etat9 or Etat10 or Etat11));
+EtatSuiv2=Etat1 and start;
+EtatSuiv3=Etat11 or Etat2; 
+EtatSuiv4=Etat3 and ((not C) and (not Z));
+EtatSuiv5=Etat4 and exp0; 
+EtatSuiv6=(Etat4 and (not exp0)) or (Etat7 and (C and (not Z)));
+EtatSuiv7=Etat5 or Etat8; 
+EtatSuiv8=Etat7 and (Z or (not C)); 
+EtatSuiv9=Etat6 or Etat10;
+EtatSuiv10=Etat9 and (Z or (not C)); 
+EtatSuiv11=Etat9 and ((not Z) and C) ; 
+EtatSuiv12=(Etat12 and not reset) or (Etat3 and (Z or C));
+
+-- Calcul des sorties 
+code1 = Etat2; 
+S = Etat5 or Etat6 ; 
+S1 = Etat5 or Etat6 or Etat7 or Etat8 or Etat9 or Etat10;
+S2 = Etat3 or Etat5 or Etat7 or Etat8 or Etat11;
+uc0 = Etat3 or Etat5 or Etat6; 
+uc1 = Etat3 or Etat11;   
+chEXP = Etat11; 
+chM = Etat6 or Etat10; 
+chN = false; 
+chCode = Etat5 or Etat8;  
+fin = Etat12;
+Sentree= Etat1;
+
+tel;
+
+node testpc = PartieC; 

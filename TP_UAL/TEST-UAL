@@ -1,0 +1,73 @@
+							TESTS UAL 4 BITS
+							----------------
+Information FLAGS: 
+------------------
+En base 2, on surveille le drapeau de retenue (C Flag, Carry) afin de détecter des erreurs dans l'opération. Le drapeau de dépassement (V Flag, Overflow) ne sert a rien.  
+
+En complement a 2, on surveille le drapeau de dépassement pour détecter les erreurs dans l'opération. Le drapeau de retenue ne sert a rien. 
+
+--------------------------------------------------------------------------------------------------------------------------------------------TESTS EN BASE 2: 
+----------------
+Le Carry Flag est activé si l'addition de deux nombres résulte en une retenue sortante parmi les bits de poids plus forts (les plus à gauche) ajoutés.
+
+  1111	 N=0           0111   N=1	  1010  N=0
++ 0001   Z=1	     + 0001   Z=0       + 0111	Z=0
+ -----	 C=1          -----   C=0       ------  C=1
+  0000	 V=0	       1000   V=1 	  0001  V=1
+  
+Le Carry Flag est également activé si la soustraction de 2 nombres nécéssite un emprunt dans les bits des poids les plus forts (les plus a gauche) ajoutés. 
+
+  0000   N=1          1000   N=0          0111  N=1
+- 0001	 Z=0	    - 0001   Z=0        - 0011  Z=0
+ -----   C=1	     -----   C=0	 -----	C=1		
+  1111   V=0          0111   V=1          1100  V=0
+  
+-------------------------------------------------------------------------------------------------------------------------------------------  
+TESTS EN BASE COMPLEMENT A 2:
+-----------------------------
+Le débordement ne peut se produire que lors de l'addition de deux nombres du même signe et obtenir un signe différent. Ainsi, pour détecter le débordement, il faut surveiller les bits de signe. 
+
+Avec deux opérandes et un résultat, nous avons trois bits de signe à considérer, nous avons donc exactement 2*3=8 combinaisons possibles. Seuls deux de ces 8 cas possibles sont considérés comme un débordement (V = 1). Pour l'addition ces deux derniers sont :
+
+	 |	A	B	RES (A+B avec additionneur n bits)
+bits	 |	0	0	1
+de signe |	1	1	0 
+
+i.e: il y a un debordement si:
+	(+A) + (+B) = −C
+	(-A) + (-B) = +C
+	
+Dans le cas de la soustraction, soustraire un nombre positif revient à ajouter un nombre négatif, donc les conditions sur les bits de signe qui activent le drapeau de débordement sont :
+
+	 |	A	B	RES (A-B avec additionneur n bits)
+bits	 |	0	1	1
+de signe |	1	0	0 
+
+i.e: il y a un debordement si:
+	(+A) − (−B) = −C
+	(-A) − (+B) = +C
+
+
+
+  0100   N=0          1101  N=0           1100	N=1
++ 0001   Z=0        + 0001  Z=0         + 1100  Z=0 
+ -----   C=0         -----  C=0          -----  C=1 
+  0101   V=0          1110  V=0		  1000  V=0  
+
+Dans le cas ou il y a un dépassement, le V Flag est activé. 
+Par exemple si on fait l'addition 0111+0001 a la main, on obtient: 
+
+  0001 -> 1       Le resultat est correct en base 2. 
++ 0111 -> 7       Ce resultat est incorrect en C2, car on ne peut pas representer l'entier 8 en complement 2 sur 4 bits
+ -----		  Donc le V Flag est activé.
+  1000 -> -8      Donc l'UAL affiche N=1, Z=0, C=0, V=1 
+  
+  Soustraction en complement 2: 
+  
+  (+7) 0111                     0111		     N = 1
+ −(−6) 1010 -> complement 2 -> +0110	             Z = 0
+    ----------                  -----		     C = 0
+  =13                           1101 = −8 + 5 = −3 : V = 1
+  
+
+  

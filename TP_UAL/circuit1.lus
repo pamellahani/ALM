@@ -1,0 +1,34 @@
+include "exDocV6.lus"
+
+function g (a, b, c, d: bool) returns (u : bool);
+let 
+u = (a and b or not c) and d ; 
+tel; 
+----------------------------------------------------------
+function k (a, b, c, d : bool) returns (s : bool);
+let
+s= cir1 (cir1(a, b, c), d, true) ;
+tel;
+----------------------------------------------------------
+function multiplexeur21(a, b, s: bool) returns (t:bool)
+let 
+t = (a and not s)or(b and s);
+tel; 
+----------------------------------------------------------
+function mux21_3bit(A, B : bool^3 ; s :bool) returns (F :bool^3);
+let 
+F[0]=multiplexeur21(A[0],B[0],s);
+F[1]=multiplexeur21(A[1],B[1],s);
+F[2]=multiplexeur21(A[2],B[2],s);
+tel;
+----------------------------------------------------------
+function multiplexeur41(a, b, c, d, s1, s2 :bool) returns(f:bool);
+let
+f=multiplexeur21(c,a,s1) or multiplexeur21(d,a,s2) or multiplexeur21(d,b,s1) or multiplexeur21(b,c,s2);
+tel; 
+----------------------------------------------------------
+function mux41_4bits(A,B,C,D,s1, s2: bool^4) returns (F :bool^4); 
+let 
+F = map <<multiplexeur41; 4>>(A[0..3],B[0..3],C[0..3],D[0..3],s1[0..3],s2[0..3]);
+tel;
+----------------------------------------------------------

@@ -1,0 +1,49 @@
+include "memoire.lus" 
+include "UALCryptoV6.lus"
+
+const n = 16;  
+
+--creer n-1 bascules pour 1 registre et la derniere bascule sera a 1 au lieu de 0
+node registreCode <<const n:int>>(ent: bool^n ; char, misea1:bool)
+returns (sort: bool^n)
+let 
+
+sort[1..n-1] = map<<bascule;n-1>>(ent[1..n-1],char^(n-1),misea1^(n-1),false^(n-1));
+sort[0]=bascule(ent[0],char,false,misea1);
+tel; 
+
+function mux4n(i1,i2:bool; e1,e2,e3,e4: bool^n) returns (s:bool^n);
+let
+s=map<<mux4;n>>(i1^n ,i2^n, e1, e2, e3, e4);
+tel;
+
+
+node PartieOP<<const n : int >>(code1,S,S1,S2,uc1,uc0,SEntree:bool; BusEnt:bool^n; chEXP, chM, chN, chCode:bool)
+returns (BusSortie,Code,M,N,Exp:bool^n;Z,C,exp0:bool );
+var BusOp1, BusOp2, BusUAL:bool^n; 
+    BusResetCode , BusSetCode : bool^n; --registres pour Set et Reset
+var BusResultat : bool^n;
+let
+
+-- Initialisation des bus reset et set:
+    BusResetCode[0] = false;
+    BusResetCode[1 .. n-1] = code1^(n-1);
+    BusSetCode[0] = code1;
+    BusSetCode[1..n-1] = false^(n-1);
+
+M=registren<<n>>(BusResultat,chM,false^n,false^n); 
+N=registren<<n>>(BusResultat,chN,false^n,false^n); 
+Exp=registren<<n>>(BusResultat,chEXP,false^n,false^n); 
+--Pour la variable Code, on applique code1 meme si chCode = 0
+Code=registren<<n>>(BusResultat,chCode,BusResetCode,BusSetCode);
+BusResultat = map <<mux1;n>>(SEntree^n ,BusEnt , BusUAL);
+
+BusSortie = Code; 
+exp0=Exp[0]; 
+BusOp1 = mux4n(S1,S2,N,Exp,M,Code); 
+BusOp2 = map<<mux1;n>>(S^n,M,N);
+(C,Z,BusUAL)= ual_n_bits(BusOp1,BusOp2,uc1, uc0); 
+tel; 
+
+
+node PO_test = PartieOP<<n>>;

@@ -1,0 +1,518 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="fr-FR">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Workshop: Programming Basics</title>
+    <meta name="CHANGEDBY" content="Pr. Olivier Gruber">
+    <link rel="stylesheet" href="../style.css" type="text/css">
+    <script src="../common.js"></script>
+    <script src="../quizz.js"></script>
+    <link rel="stylesheet" href="../highlight.js/styles/default.css">
+    <script src="../highlight.js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </head>
+  <body onload="shellOnLoad()">
+    <script>
+      function shellOnLoad() {
+        multiLang();
+        /*hljs.initHighlightingOnLoad(); */
+        _quizzes = new Array();
+        parseQuizzes();
+      }  
+    </script>
+    <div id="outer-container">
+      <div id="header">
+        <div id="logo"> <img src="../logo_uga.png" alt="Université
+            Grenoble-Alpes" height="100" border="0"> <img
+            src="../logo_reseau_polytech.gif" alt="Polytech" height="80"
+            border="0"> </div>
+        <div id="top-links"> <a href="../index.html">Home</a> </div>
+      </div>
+      <div>
+        <h1>Sprint: Assembly Programming Basics</h1>
+        <h2>Task4 -- Gestion de la pile</h2>
+        <h3>Step 5 -- Travail Pratique : La pile en C</h3>
+        <dl>
+          <dt>Afin de vérifier si vous avez compris l'ensemble des
+            notions sur l'assembleur ARM (en particulier les appels de
+            fonctions et la pile), vous devez réaliser ce TP en binôme
+            et rendre un compte rendu.</dt>
+        </dl>
+        <br>
+        Le TP consiste en deux parties :</div>
+      <div><br>
+      </div>
+      <div>&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 1) Observer du
+        code assembleur, observer son exécution sous GDB et à répondre à
+        un certain nombre de questions.
+        <dl>
+          <dt style="margin-left: 40px;">2) Des exercices de
+            programmation au choix. </dt>
+        </dl>
+        <dl>
+        </dl>
+        <br>
+        <dl>
+          <dt>Placez vous dans le répertoire task4s5C.</dt>
+        </dl>
+        <ul>
+          <li><b>Compréhension de l'algorithme :</b></li>
+        </ul>
+        <dl>
+          Le programme <i>syracuseprint.c</i> affiche la suite de
+          Syracuse en partant d'un entier positif N et retourne le
+          nombre d'itération nécessaire pour obtenir la valeur '1'. <br>
+          la suite de Syracuse est définie par:<br>
+          A partir d'un entier strictement positif : U0 ,&nbsp; si Un
+          est pair Un+1= Un div 2 sinon Un+1= 3*Un +1<br>
+          Après un certains nombre d'étapes la suite devrait converger
+          vers 1 puis boucler sur 4,2,1 quelque soit U0 (mais cela n'a
+          jamais été démontré !)<br>
+          <br>
+          Par exemple : à partir de 13 : 13, 40, 20, 10, 5, 16, 8, 4, 2,
+          1. <br>
+          Il était donc nécessaire ici d'effectuer 9 itérations pour
+          arriver à 1.<br>
+          <br>
+          <dl>
+          </dl>
+          <span style="font-family: Arial,serif;">&nbsp;&nbsp;&nbsp; -</span>
+          Compilez le programme <i>syracuseprint.c</i> à l'aide de la
+          commande <i>make syracuse</i>
+        </dl>
+      </div>
+      <div>&nbsp;&nbsp;&nbsp; - Faites tourner le programme pour
+        différentes valeurs de U0.<br>
+        <br>
+        Q0- Ce programme donnera t-il toujours les bonnes valeurs de Un
+        ? Si non donnez une valeur de U0 pour laquelle le programme ne
+        fonctionne pas.<br>
+        Expliquez pourquoi ? <br>
+        <span></span>
+        <dl>
+        </dl>
+        <br>
+        <h2>1-Questions d'analyse d'un programme assembleur généré par
+          un compilateur</h2>
+        <dl>
+        </dl>
+        <div><dt style="margin-left: 40px;">- Compilez le programme <i>syracuse</i><i>.c</i>
+            (même chose que <i>syracuseprint.c</i> sans l'appel à la
+            fonction <i>printf</i>) en utilisant la commande <i>make</i>
+            puis ouvrez le fichier <i>syracuse.s</i> pour observer ce
+            que GCC a généré comme assembleur ARM.</dt>
+        </div>
+        <dl>
+        </dl>
+        <div><dt style="margin-left: 40px;"> -Pour&nbsp; répondre aux
+            questions suivantes, exécutez le programme sous GDB en vous
+            arrêtant aux bons endroits en en observant les variables,
+            les registres, la pile .... </dt>
+        </div>
+        <h3>Le Makefile<br>
+        </h3>
+        <dl>
+          <dt> Q1- Expliquez les caractères $@ et $&lt; apparaissant
+            dans le makefile</dt>
+          <dt><br>
+          </dt>
+          <dt>Q2- Expliquez les conséquences sur l'utilisation de la
+            commande <b><i>make</i></b> si on enlève le mot <b><i>syracuse</i></b>
+            à la suite du <b><i>all: </i></b>dans le fichier<i>
+              Makefile</i></dt>
+          <dd><br>
+          </dd>
+        </dl>
+        <div> </div>
+        <dl>
+          <h3>Variable globale<br>
+          </h3>
+          <dt> Q2- Quel est le nom de la variable globale du programme ?
+          </dt>
+          <dd><br>
+          </dd>
+          <dt> Q3- Où est stockée la variable globale ? Donnez la valeur
+            de son adresse en hexadécimal. </dt>
+          <dd>Y a t'il une étiquette correspondant à cette variable dans
+            le programme ? Où apparait cette étiquette dans le programme
+            assembleur ? <br>
+          </dd>
+          <dd>Que veut dire <i><b>.comm&nbsp;&nbsp;&nbsp; x,4,4 </b></i>?<br>
+          </dd>
+          <dd><br>
+          </dd>
+          <dt>Q4- Où est stockée l'adresse de la variable globale ?
+            Donnez la valeur de des adresses en hexadécimal des 4 cases
+            où est stockée cette adresse.<br>
+          </dt>
+          <dd><br>
+          </dd>
+          <dd><br>
+          </dd>
+        </dl>
+        <dl>
+          <h3>Une histoire de pile</h3>
+          <dt> Q5- A quelle adresse commence la pile ? Comment le
+            savez-vous ? </dt>
+          <dd><br>
+          </dd>
+          <dt>Q6- Au début de la fonction <i>syracuse</i>, expliquez
+            l'instruction&nbsp;&nbsp; <b><i>push&nbsp;&nbsp; &nbsp;{fp,
+                lr}</i></b><i><b>&nbsp;</b></i> </dt>
+          <dd><br>
+          </dd>
+          <dt> Q7- Dessinez l'état de la pile après la troisième
+            instruction du main (<b><i>sub sp, sp, #16</i></b>).
+            Précisez les cases pointées par <b><i>sp</i></b> et <i><b>fp</b></i>.</dt>
+          <dt>Précisez où sont sauvegardés <b><i>fp</i></b> et <b><i>lr</i></b>.<br>
+          </dt>
+          <dd><br>
+          </dd>
+          <dt> Q8- Donnez la valeur (en hexadécimal) de <i><b>fp</b></i>
+            et <i><b>sp</b></i> à ce moment là. <br>
+          </dt>
+          <dt><br>
+          </dt>
+        </dl>
+        <h3>Passage de paramètres </h3>
+        <dl>
+          <dt> Q9- Comment est passée la valeur du paramètre de la
+            fonction <i>syracuse</i> depuis la fonction <i>main</i> ?
+          </dt>
+          <dd><br>
+          </dd>
+          <dt> Q10- Au début de la fonction <i>syracuse</i>, expliquez
+            les instructions <b><i>str r0, [fp, #-16]</i></b> et <b><i>ldr
+
+
+                r3, [fp, #-16] </i></b></dt>
+          <dd><br>
+          </dd>
+          <dt> Q11- Complétez le dessin de la pile en précisant
+            l'emplacement (par rapport à <i><b>fp</b></i>) de la
+            sauvegarde du paramètre.<br>
+          </dt>
+        </dl>
+        <h3>Variable locale</h3>
+        <p>Q12- Où est stockée la variable locale <b><i>res </i></b>de
+          <i>syracuse</i> <b><i>? <br>
+            </i></b>Donnez son adresse en fonction de la valeur de <i><b>fp.<br>
+            </b></i>Complétez&nbsp; le dessin de la pile<i><b> </b></i>en
+
+
+          montrant où est stocké la variable<i><b> res.<br>
+            </b></i></p>
+        <dl>
+          <h3> Le retour de fonction</h3>
+          <dt> Q13-Comment est passé la valeur de retour à la fin de la
+            fonction <i>syracuse</i> ? </dt>
+          <dd><br>
+          </dd>
+          <dt> Q14- Expliquez les trois dernières instructions de la
+            fonction <i>syracuse</i> ? </dt>
+          <dd><br>
+          </dd>
+          <dt> Q15-Donnez la valeur X en hexadécimal du registre lr au
+            moment de l'instruction <i><b>bx lr</b></i>.</dt>
+          <dt>Rappel : l'instruction <b><i>bx reg</i></b> effectue un
+            branchement à l'adresse contenu dans le registre <b><i>reg</i></b>.<span
+              style="font-family: Arial,serif;"></span></dt>
+          <dd><br>
+            <span style="font-family: Arial,serif;"></span></dd>
+          <dt> Q16- Quelle est l'instruction qui se trouve en mémoire à
+            l'adresse X ?`</dt>
+          <dd><br>
+          </dd>
+          <dt> Q17- Où est stocké la variable&nbsp; <b><i>y</i></b>&nbsp;
+
+
+            du main ? Donnez la valeur en hexadécimal de son adresse.</dt>
+          <dt>Quelle est l'instruction qui effectue l'affectation <b><i>y=&nbsp;
+
+
+                syracuse(x);</i></b></dt>
+        </dl>
+        <dl>
+          <dt>Q18- Quelle sera la valeur de PC une fois le retour de la
+            fonction <i><b>main</b></i> effectué ? </dt>
+          <dd><br>
+          </dd>
+          <dt> Q19- Que contiendrait PC une fois le retour du main
+            effectué dans le cas où le programme n'est pas exécuté sur
+            QEMU mais sur le processeur de votre machine (cas de <i>syracuseprint</i>).
+
+
+
+          </dt>
+        </dl>
+        <p></p>
+        <h3><b>Appel récursif</b></h3>
+        <p>Q20- Que contient le registre <i><b>lr</b></i> après ce
+          premier appel récursif ? Donnez sa valeur en hexadécimal.</p>
+        <p>Q21- Dessinez l'état de la pile après un premier appel
+          récursif de <i>syracuse</i> (après l'instruction <b><i>sub
+              sp, sp, #16</i></b> )<br>
+        </p>
+        <dl>
+          <h3> Du C a l'assembleur </h3>
+          <dt> Q22 - (bonus) Pourquoi est-ce une bonne pratique d'écrire
+            <i><b>if (0 == (a &amp; 0x1)) </b></i>au lieu de <i><b>if
+                ((a &amp; 0x1) == 0)</b></i> ? </dt>
+          <dd>Que ferait le programme si on écrivait <i><b>if ((a &amp;
+                0x1) = 0) </b></i>?</dd>
+          <dt><br>
+          </dt>
+          <dt> Q23- Dans la fonction <i>syracuse</i> retrouvez et
+            commentez la traduction en ARM de <b><i>if (0 == (a &amp;
+                0x1))</i></b> </dt>
+          <dd>Que ferait le programme si on écrivait <i><b>if (0 == (a
+                &amp;&amp; 0x1)) </b></i>?</dd>
+        </dl>
+        <h3><b>Codage des instructions</b><br>
+        </h3>
+        <dl>
+          <dt> Q24- Donnez la valeur en hexadécimal des 4 octets codant
+            l'instruction <b><i>bne .L2</i></b></dt>
+          <dd>Retrouvez dans la documentation ARM fournie le
+            codage&nbsp; de cette instruction.</dd>
+          <dt><br>
+          </dt>
+          <dt>Expliquez la valeur des champs <i><b>cond</b></i> et <i><b>déplacement</b></i>
+            de cette instruction<font size="+3" color="#000000"><font
+                face="Menlo-Regular"><font style="font-size: 11pt">.</font></font></font></dt>
+          <dd><br>
+          </dd>
+          <dt><font size="+3" color="#000000"><font face="Menlo-Regular"><font
+                  style="font-size: 11pt">Donnez la valeur de cette
+                  instruction.</font></font></font><font size="+3"
+              color="#000000"><font face="Menlo-Regular"><font
+                  style="font-size: 11pt"><font color="#000000"><font
+                      face="Menlo-Regular"><font style="font-size: 11pt">
+                        Attention ARM est un<i> little endian</i> donc
+                        les octet de poids faible en premier.</font></font></font></font></font></font></dt>
+        </dl>
+        <font size="+3" color="#000000"><font face="Menlo-Regular"><font
+              style="font-size: 11pt"><font color="#000000"><font
+                  face="Menlo-Regular"><font style="font-size: 11pt"></font></font></font></font></font></font>
+        <dl>
+          <dt><font size="+1" color="#000000"><font face="Menlo-Regular"><font
+                  style="font-size: 11pt">Donnez la valeur du champ <b><i>déplacement</i></b></font></font></font><font
+              size="+1" color="#000000"><font face="Menlo-Regular"><font
+                  style="font-size: 11pt">. Expliquez cette valeur. </font></font></font><br>
+          </dt>
+        </dl>
+        <ol>
+        </ol>
+        <h2>2-Exercices de programmation</h2>
+        <dl>
+          <dt> Réalisez les exercices de programmations
+            ci-dessous.&nbsp; Les exercices sont classés par ordre de
+            difficulté. Faites au moins deux de ces exercices.</dt>
+          <dt>Le code&nbsp; Assembleur ou C doit être commenté le mieux
+            possible. Sans fournir une documentation complète, un
+            minimum de commentaires sont demandés pour aider à la
+            compréhension du code.</dt>
+          <dt>Vous pouvez fournir des tests permettant de se persuader
+            que vos programmes fonctionnent correctement.</dt>
+        </dl>
+        <p> </p>
+        <h5>Exercice 1&nbsp; : Affichage d'une chaine de caractères</h5>
+        1- Ecrivez en assembleur ARM, une fonction <b>print_string</b>
+        qui prend en paramètre une adresse d'une chaîne de caractère
+        (passé par le registre r0), et l'affiche. <br>
+        Vous devrez utiliser la fonction <b>_writec</b> contenue dans
+        le fichier <i>io.s</i>. <br>
+        Voici un exemple d'utilisation de la fonction.
+        <pre><code class="arm">
+_start:
+    ldr r0, .string_ptr
+    bl print_string
+/*
+...
+*/
+.string_ptr:
+    .word string
+string:
+    .ascii "CA MARCHE ! \000"
+        </code></pre>
+        <dl>
+          <dt> Comme vous pouvez le constater, la chaîne de caractère
+            termine avec <b><i>"\000"</i></b>. Cela sert à repérer la
+            fin de la chaîne en la terminant par un 0. </dt>
+        </dl>
+        <dl>
+          <dt>Vous pouvez vous servir des fichiers se trouvant dans <i>le
+
+
+
+
+
+              répertoire FichiersExercices/EXO1ARM</i></dt>
+        </dl>
+        <dl>
+        </dl>
+        <p> </p>
+        2- Réalisez l'appel de <i>print_string</i> depuis un programme
+        C.</div>
+      <div>Vous pouvez vous servir des fichiers se trouvant dans <i>FichiersExercices/EXO1C</i>
+        <p> </p>
+        <h5>Exercice 2 : Console</h5>
+        1- Ecrivez une fonction qui permet à l'utilisateur de saisir du
+        texte dans le terminal de <i>qemu</i>. Le texte saisie par
+        l'utilisateur doit s'afficher à l'écran en temps réel. </div>
+      <div>Voici un exemple d'utilisation de la fonction.<code
+          class="arm"> </code>
+        <pre><code class="arm">_start:
+    bl saisie_string
+</code></pre>
+      </div>
+      <div> Lorsque l'utilisateur appuie sur entrée, le programme
+        affiche sur une nouvelle ligne, le texte saisie en majuscule. Si
+        le texte contient des caractères qui ne sont pas des lettres,
+        elles ne doivent pas être modifiées.</div>
+      <div><br>
+      </div>
+      <div> Exemple d'affichage du programme :
+        <pre><code>
+je suis dans la console qemu
+JE SUIS DANS LA CONSOLE QEMU
+Je Peux saisir DU texte
+JE PEUX SAISIR DU TEXTE
+Qu1 c0nt13nt De5 ch1ffres et De5 Lettr3s
+QU1 C0NT13NT DE5 CH1FFRES ET DE5 LETTR3S
+        </code></pre>
+        <dl>
+          <dt> Vous aurez besoin des fonctions <i><b>_writec</b></i> et
+            <b><i>_readc</i></b> du fichier <i>io.s</i></dt>
+          <dt><br>
+          </dt>
+        </dl>
+        <p> </p>
+        2- Réalisez l'appel de <i>saisie_string</i> depuis un programme
+        C.<br>
+        <p> </p>
+        <h5>Exercice 3&nbsp; : Ecriture en hexadécimal</h5>
+        1- Ecrivez <b>en langage C </b>une&nbsp; procédure <i>print_hex</i>
+        qui prend en entrée un entier sur un octet <i>x</i> et qui
+        affecte les cases d'un tableau <i>ValAscii</i> (de deux octets)
+        avec les valeurs des codes ASCII de l'affichage en hexadécimal
+        de cet octet. </div>
+      <div><i>void print_hex(char x, char *ValAscii);</i></div>
+      <div><i><br>
+        </i></div>
+      <div> Exemple : X= 35 = 0x23,&nbsp; la fonction affecte le tableau
+        <i>ValAscii</i> avec les valeurs (décimales) 50 et 51</div>
+      <div>
+        <p> </p>
+        2- Ecrivez un programme en assembleur qui appelle la fonction C
+        précédemment écrite et qui affiche dans le terminal de <i>qemu</i>
+        les chiffres de la valeur en hexadécimal de X.</div>
+      <div><br>
+      </div>
+      <div>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">.text</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">.align<span
+              class="Apple-converted-space">&nbsp; </span></font><font
+            style="font: 12.0px Menlo; color: #1c00cf" size="3"
+            face="Menlo" color="#1c00cf">2</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">.global main</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">main:</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">ldr r0,AdX</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">ldrb r0,[r0]</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">ldr r1,
+            AdTabAscii</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: #5d6c79"
+            size="3" face="Menlo" color="#5d6c79">//....</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">AdX: .word X</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">AdTabAscii:
+            .word TabAscii</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo;
+          color: #000000; color: rgba(0, 0, 0, 0.85); background-color:
+          #ffffff; min-height: 14.0px"><br>
+        </p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">.data</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">X:</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">&nbsp;&nbsp;&nbsp;
+
+
+
+
+
+            .byte </font><font style="font: 12.0px Menlo; color:
+            #1c00cf" size="3" face="Menlo" color="#1c00cf">35</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000">TabAscii:</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000"><span
+              class="Apple-converted-space">&nbsp; &nbsp; </span>.byte
+          </font><font style="font: 12.0px Menlo; color: #1c00cf"
+            size="3" face="Menlo" color="#1c00cf">0</font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><font style="font: 12.0px Menlo; color: rgba(0, 0, 0,
+            0.85)" size="3" face="Menlo" color="#000000"><span
+              class="Apple-converted-space">&nbsp; &nbsp; </span>.byte
+            0 </font></p>
+        <p style="margin: 0.0px 0.0px 0.0px 0.0px; background-color:
+          #ffffff"><br>
+        </p>
+      </div>
+      <div>
+        <p> </p>
+        Vous pouvez vous servir des fichiers se trouvant dans
+        FichiersExercices/EXO3
+        <h5>Exercice 4 : Exercice libre</h5>
+        Pour les plus motivés, réalisez le programme que vous voulez en
+        respectant les règles suivantes:
+        <ol>
+        </ol>
+        <div><dt style="margin-left: 40px;">- Il doit contenir un
+            mélange d'assembleur ARM et de C. Vous êtes libre de choisir
+            les proportions de C et d'assembleurs, l'important est
+            d'être capable d'écrire des fonctions dans un language,
+            utilisées dans un autre.</dt>
+        </div>
+        <dl>
+          <dd>- Il doit être interactif. L'utilisateur doit saisir du
+            texte ou commander le programme au clavier.</dd>
+          <dt><br>
+          </dt>
+        </dl>
+        <ol>
+        </ol>
+        Soyez créatifs, et surtout, amusez vous !
+        <div id="footer"> © UFR IM2AG </div>
+        <div><br>
+          <div id="bottom-links" style="float: right;"> <a
+              href="../index.html">Home</a> </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

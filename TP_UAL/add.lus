@@ -1,0 +1,49 @@
+include "circuit1.lus"
+include "entierv6.lus"
+
+function add1bit (a, b, cin : bool) returns (z, cout : bool);
+let
+z = (a xor b) xor cin; 
+cout = (a and b)or(b and cin)or(a and cin); 
+tel; 
+----------------------------------------------------------
+function add8bit (A, B: bool ^ 8; c0 : bool) returns (Z : bool ^ 8; c8 : bool);
+var retint: bool^9;
+let
+retint[0]= c0;
+(Z, retint[1..8])= map<<add1bit, 8>>( A, B, retint[0..7]);
+c8= retint[8];
+tel;
+----------------------------------------------------------
+function addnbits <<const n: int>>(A , B : bool^n ; cin : bool)
+returns (R : bool^n ; cout : bool);
+var retint: bool^n+1;
+let
+retint[0]= cin;
+(R, retint[1..n])= map<<add1bit, n >>( A, B, retint[0..n-1]);
+cout= retint[n];
+tel;
+-----------------------------------------------------------
+--const n = 16; 
+function add16bit = addnbits<<n>>; 
+-----------------------------------------------------------
+function comp2 = entiernat<<16>>; 
+function comp2r = entierrel<<16>>; 
+
+function and_1_bit (a,b:bool)returns(r:bool); 
+let 
+r= a and b; 
+tel; 
+
+function and_n_bits <<const n: int>>(A:bool^n)returns(R:bool);
+var i : bool^(n-1); 
+let 
+i[0]=A[0] and A[1]; 
+i[1..n-2]=map <<and_1_bit, n-2>>(i[0..n-3],A[2..n-1]);
+R=i[n-2]; 
+tel; 
+
+function and_16_bit = and_n_bits<<16>>
+
+----------------------------------------------------
+

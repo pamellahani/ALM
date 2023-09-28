@@ -1,0 +1,44 @@
+include "entierv6.lus"
+include "circuit1.lus"
+include "add.lus"
+include "circuit1.lus"
+include "UAL.lus"
+include "addaffdecimal.lus"
+-------------------------------------------------------------------------
+----------additionneur 1 bit -------------------------------
+function ADD1bit (a,b,c : bool)
+returns (r,cs: bool);
+let
+r = a xor b xor c;
+cs = (a and b) or (a and c) or (b and c);
+tel;
+-------------------------------------------------------------------------
+----------additionneur n bits -------------------------------
+
+function ADDnbits <<const n : int>> (A,B:bool^n; uc0:bool; uc1:bool)
+returns (r : bool^n ; N,Z,cn,V: bool);
+var c : bool^(n+1);
+let
+c[0] = c0;
+(r , c[1..n]) = map <<ADD1bit ; n>> (a, b, c[0..(n-1)]);
+cn = c[n];
+V=retint[n] xor retint[n-1]; 
+Z= not or_n_bits(R); 
+N=r[n-1]; 
+tel;
+
+function affaddbase2 <<const n : int>> (a,b : bool^n ; c0 : bool; uc0:bool; uc1:bool)
+returns (A,B, RES: int ; N,Z,C,V:bool);
+var R:bool^n;
+-- var nf:bool;
+-- var z:bool;
+-- var c:bool; 
+-- var v:bool;
+let
+(R,N,Z,C,V)=UAL <<n>> (a,b,uc0,uc1);
+RES=entiernat<<n>>(R);
+A=entiernat<<n>>(a);
+B=entiernat<<n>>(b);
+tel
+
+function iadd = affaddbase2<<4>>;

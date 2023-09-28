@@ -1,0 +1,85 @@
+include "circuit1.lus"
+include "entierv6.lus"
+include "add.lus"
+include "circuit1.lus"
+include "addaffdecimal.lus"
+
+const n = 4;
+----------------------------------------------------------------------
+function or1bit(a,b : bool) returns (c : bool);
+let
+c = a or b;
+tel; 
+
+function or_n_bits <<const n : int>> (X: bool^n) returns (result : bool);
+var i : bool^(n-1);
+let
+i[0] = X[0] or X[1];
+i[1..n-2] = map<<or1bit, n-2>>(i[0..n-3], X[2..n-1]);
+result = i[n-2];
+tel; 
+-----------------------------------------------------------------------
+function addnbits_Flags <<const n: int>>(A , B : bool^n ; cin : bool) returns (R : bool^n ; N,Z,C,V: bool);
+var retint: bool^n+1;
+let
+retint[0]= cin;
+(R, retint[1..n])= map<<add1bit, n >>( A, B, retint[0..n-1]);
+C= retint[n];
+V=retint[n] xor retint[n-1]; 
+Z= not or_n_bits(R); 
+N=R[n-1]; 
+tel;
+
+function add4bits_Flags = addnbits_Flags<<4>>;
+-----------------------------------------------------------------------
+
+function multiplexeur_A_1_bit(a,uc0,uc1:bool) returns (R: bool);
+let
+R= (uc0 and a) or (uc1 and (not uc0) and (not a));
+tel; 
+
+
+function multiplexeur_A <<const n: int>>(A:bool^n ; uc0,uc1:bool)returns (R: bool^n)
+let 
+R=map<<multiplexeur_A_1_bit, n>>(A[0..n-1], uc0^n, uc1^n); 
+tel;
+---------------------------------------------------------------------------
+
+function multiplexeur_B_1_bit(b,uc0, uc1:bool)returns(R:bool); 
+let
+R= ((not uc1) and b) or (uc1 and uc0 and (not b));
+tel;
+
+function multiplexeur_B <<const n: int>> (B:bool^n ; uc0,uc1:bool)returns (R: bool^n)
+let 
+R=map<<multiplexeur_B_1_bit, n>>(B[0..n-1], uc0^n, uc1^n); 
+tel; 
+
+function multiplexeur_v0(uc0,uc1:bool)returns(R:bool); 
+let
+R= ((not uc1) and (not uc0)) or uc1;
+tel;
+
+-------------------------------------------------------------------------
+function multiplexeur_C(uc0, uc1, temp : bool) returns (res : bool);
+let
+--res = (not uc1 and c) or (uc1 and not c);
+res = ((not uc0)and(not uc1)and temp)or((not uc1)or uc0 or temp)or(uc1 and (not uc0)or(not temp))or((not uc0)and(not uc1)and(not temp)); 
+tel;
+
+-------------------------------------------------------------------------
+function UAL <<const n :int>> (A,B:bool^n; uc0:bool; uc1:bool)returns(R:bool^n; N,Z,C,V: bool); 
+var temp:bool;
+var X: bool^n;
+var Y: bool^n; 
+var v0 : bool;
+let
+v0 = multiplexeur_v0(uc0,uc1);
+X=multiplexeur_A<<n>>(A,uc0,uc1);
+Y=multiplexeur_B<<n>>(B,uc0,uc1);
+
+(R,N,Z,temp,V)=addnbits_Flags<<n>>(X,Y,v0);
+C = multiplexeur_C(uc0, uc1, temp); 
+tel;
+
+function UAL4bits = UAL<<n>>; 

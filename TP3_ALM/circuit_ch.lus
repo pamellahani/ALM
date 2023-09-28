@@ -1,0 +1,43 @@
+include "PO_chiffrement.lus"
+include "PC_chiffrement.lus"
+include "UALCryptoV6.lus"
+include "memoire.lus"
+
+-- Avant de charger les variables ch... , il faut appuyer sur le bouton reset puis Lancer puis
+-- charger les entiers. 
+-------------------------------------------------------------------------
+
+node chiffrement <<const n:int>>( BusEntree: bool^n ; Lancer , reset , chMExt ,chExpExt ,chNExt : bool)
+returns (BusSortie,Code,M,N,Exp: bool^n ; fin : bool);
+var ChMPO,ChEXPPO,ChNPO,chCode, chEXP,chM,chN,S,S1,S2,uc0,uc1,SEntree: bool ;
+var code1, C,exp0, Z:bool;
+
+let
+---calcul des chMPO,chExpPO,chNPO
+ChMPO = chM or (chMExt and not Lancer);
+ChEXPPO=chEXP or (chExpExt and not Lancer);
+ChNPO= chN or (chNExt and not Lancer);
+
+(S,S1,S2,uc1,uc0,SEntree, chEXP, chM, chN, chCode,code1,fin)=PartieC(Z,C, exp0, reset,Lancer); 
+(BusSortie,Code,M,N,Exp,Z,C,exp0)=PartieOP(code1,S,S1,S2,uc1,uc0,SEntree,BusEntree,ChEXPPO, ChMPO, ChNPO, chCode); 
+
+tel;
+
+---------------------------------------------------------------------------------
+--------affiche le resultat en decimal----------------------------
+node chiff_int<<const n:int>> ( BusEntree:bool^n; reset,Lancer,chargerN,chargerExp, chargerM:bool)
+returns (Res,Codei,Mi,Ni,Expi:int; FinCalcul:bool);
+var BusSortie:bool^n;
+var Code,M,N,Exp : bool^n;
+
+let
+(BusSortie,Code,M,N,Exp,FinCalcul)=chiffrement<<n>>(BusEntree, Lancer, reset, chargerM,chargerExp,chargerN);
+Res= entiernat<<n>>(BusSortie);
+Codei= entiernat<<n>>(Code);
+Mi= entiernat<<n>>(M);
+Ni= entiernat<<n>>(N);
+Expi= entiernat<<n>>(Exp);
+tel;
+---------------------------------------------------------------------------------
+--------simulation sur 16 bits----------------------------
+node chfin=chiff_int<<16>>;
