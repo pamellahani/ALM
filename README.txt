@@ -1,3 +1,5 @@
+Languages used here : Lustre, Assembly and C 
+
 commandes pour executer (sur 16 bits):
 
 - la machine algorithmique (Partie Controle et Partie Operative): 
